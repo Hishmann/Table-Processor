@@ -1,6 +1,6 @@
 
+import TableEvaluator.FormulaEvaluator.parser.{Parser, Tokenizer}
 import org.scalatest.FunSuite
-import Table.TableFormulaEvaluator.parser.{Parser, Tokenizer}
 
 class ParserTest extends FunSuite {
 

@@ -1,4 +1,4 @@
-package Table.TableFormulaEvaluator.parser
+package TableEvaluator.FormulaEvaluator.parser
 
 sealed trait Token {
     val symbol = ""
@@ -121,40 +121,6 @@ class Parser(tokens: List[Token]) {
                 nextToken()
                 result
             case _ => throw new RuntimeException("Unexpected token in the formula")
-        }
-    }
-}
-
-
-object FormulaChecker {
-    def cellFormulaValidity(cell: String) : Boolean = {
-        if (cell.startsWith("=")) {
-            var TokenRegex = "^[A-Z0-9\\="
-            for ((key, value) <- new Tokenizer().tokenMap) {
-                TokenRegex += s"\\$key"
-            }
-            TokenRegex += " ]*$"
-
-            val validPattern = s"$TokenRegex".r
-            if (!validPattern.matches(cell)) { return false }
-
-            val invalidConsecutivePattern = """(\d+[A-Z]+|[A-Z]+\d+[\s]+[A-Z]+\d+)""".r
-            val invalidPattern1 = """[A-Z]+\d+[A-Z]+""".r   // Invalid if digits are followed by letters (e.g., A1B)
-            val invalidPattern2 = """\d+[A-Z]+""".r  // Invalid if letters come after digits in a cell reference
-
-            // Check for invalid patterns (invalid cell references or numbers without operators)
-            if (invalidPattern1.findFirstIn(cell).isDefined ||
-                invalidPattern2.findFirstIn(cell).isDefined ||
-                invalidConsecutivePattern.findFirstIn(cell).isDefined) {
-                return false // Invalid pattern found, flag it
-            }
-
-            cell match {
-                case validPattern() => true  // The string is valid, no need to flag it
-                case _ => false  // The string contains invalid characters, flag it
-            }
-        } else {
-            false
         }
     }
 }

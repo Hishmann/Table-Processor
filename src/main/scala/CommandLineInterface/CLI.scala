@@ -1,46 +1,54 @@
 package CommandLineInterface
-import commands.{command, inputFileCommand, helpCommand}
 
-class CLI(val arguments: List[String], private val setup: CommandArgs, private val allCommands: List[command]) {
+import Models.CommandArguments
+import Commands.command
+import CommandUtils.CommandUtils
 
-    def setupReturn(): CommandArgs = setup
-    private def runHelp(): Unit = { for (command <- allCommands) { command.printHelp() } }
-    private def invalidInput(): Unit = {
-        throw new RuntimeException("No input file mentioned or Invalid command line arguments\n" +
-            "Please try --help or -h for guidance.")
+class CLI(val arguments: List[String], val allCommands: List[command]) {
+
+    private def runHelp(): Unit = { for (command <- allCommands) { println(command.helpStr) } }
+    private def invalidInput(s: String = "", nonExistingCommand: Boolean = false): Unit = {
+        if (nonExistingCommand) {
+            throw new RuntimeException(s"Invalid command found: $s \n" +
+                "Please try --help or -h for guidance.")
+        }
+        if (s.isEmpty) {
+            throw new RuntimeException("No input file mentioned or Invalid command line arguments\n" +
+                "Please try --help or -h for guidance.")
+        } else {
+            throw new RuntimeException(s"Invalid command line arguments for $s \n" +
+                "Please try --help or -h for guidance.")
+        }
     }
 
-    def runCommands(): Unit = {
+    def runCommands(): CommandArguments = {
+        var setup: CommandArguments = CommandArguments()
+        for (arg <- arguments) {
+            if ((arg.startsWith("--") && !allCommands.exists("--" + _.keyStr == arg))
+                && (arg.startsWith("-") && !allCommands.exists("-" + _.keyStr2 == arg))) {
+                invalidInput(arg, nonExistingCommand = true)
+            }
+        }
+        var inputFileIncluded: Boolean = false
         for (command <- allCommands) {
-            for (arg <- arguments) {
-                if ((arg.startsWith("--") && !allCommands.exists(_.keyStrReturn == arg))
-                && (arg.startsWith("-") && !allCommands.exists(_.keyStr2Return == arg))) {
-                    println(s"Invalid command found: $arg")
-                    invalidInput()
-                }
+            val params: List[String] = command.processCommand(arguments)
+            if (params.nonEmpty && command.hasSeen) {
+                setup.addArgAndParam(command.keyStr, params)
             }
-
-            val params : List[String] = command.processCommand(arguments)
-
-            if (params.nonEmpty) {
-                setup.addKeyAndValue(command.keyStrReturn, params)
-            }
-
             if (command.hasFailed) {
-                invalidInput()
+                invalidInput(command.keyStr)
+            }
+            if (command.keyStr == CommandUtils.helpCommandName && command.hasSeen) {
+                runHelp()
+                return new CommandArguments()
+            }
+            if (command.keyStr == CommandUtils.inputFileCommandName && command.hasSeen && !command.hasFailed) {
+                inputFileIncluded = true
             }
         }
-        val helpCommand: command = new helpCommand()
-        if (setup.valueFromKeyOrElse(helpCommand.keyStrReturn) == List(helpCommand.toggleValueReturn)) {
-            runHelp()
-            return
-        }
-        if (setup.valueFromKeyOrElse(new inputFileCommand().keyStrReturn) == List("")) {
+        if (!inputFileIncluded || setup.argsEmpty) {
             invalidInput()
         }
-        if (setup.argsEmpty) {
-            invalidInput()
-        }
+        setup
     }
-
 }
