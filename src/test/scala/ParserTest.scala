@@ -14,6 +14,7 @@ class ParserTest extends FunSuite {
         assert(evaluate("5 - 5 + 5") == 5 )
         assert(evaluate("=5") == 5 )
         assert(evaluate("=(5 / 5) * 3 +2+1") == 6)
+        assert(evaluate("=(5 / 5) * (3 + 2 + 1)") == 6)
     }
 
 }

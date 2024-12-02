@@ -1,60 +1,6 @@
 package TableEvaluator.FormulaEvaluator.parser
 
-sealed trait Token {
-    val symbol = ""
-    def operation(a:Int, b: Int) : Int = { 0 }
-}
-case class Number(value: Int) extends Token {
-}
-case object Plus extends Token {
-    override val symbol = "+"
-    override def operation(a:Int, b: Int) : Int = { a + b }
-}
-case object Minus extends Token {
-    override val symbol = "-"
-    override def operation(a:Int, b: Int) : Int = { a - b }
-}
-case object Multiply extends Token {
-    override val symbol = "*"
-    override def operation(a:Int, b: Int) : Int = { a * b }
-}
-case object Divide extends Token {
-    override val symbol = "/"
-    override def operation(a:Int, b: Int) : Int = { a / b }
-}
-case object LeftParen extends Token {
-    override val symbol = "("
-}
-case object RightParen extends Token {
-    override val symbol = ")"
-}
-
-class Tokenizer {
-
-    val tokenMap: Map[String, Token] = Map(
-        Plus.symbol -> Plus,
-        Minus.symbol -> Minus,
-        Multiply.symbol -> Multiply,
-        Divide.symbol -> Divide,
-        RightParen.symbol -> RightParen,
-        LeftParen.symbol -> LeftParen,
-    )
-
-    def tokenize(expr: String): List[Token] = {
-        var TokenRegex = "(\\d+"
-        for ((key, value) <- tokenMap) {
-            TokenRegex += s"|\\$key"
-        }
-        TokenRegex += ")"
-        val RegexPattern = s"$TokenRegex".r
-
-        RegexPattern.findAllIn(expr).toList.map {
-            case s if tokenMap.contains(s) => tokenMap(s)    // Map the operators and parentheses
-            case num => Number(num.toInt)                    // Convert matched numbers to Number tokens
-        }
-    }
-}
-
+import Tokens._
 
 class Parser(tokens: List[Token]) {
     private var position: Int = 0
