@@ -32,4 +32,9 @@ class TableCreatorFromTextTest extends FunSuite {
             TCtoTT.getTable(test2)
         }
     }
+
+    val test3: TextTable = TextTable(List())
+    test("Empty Text Table") {
+        assert(TCtoTT.getTable(test3) == Table())
+    }
 }

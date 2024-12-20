@@ -29,10 +29,17 @@ class GetRangeContext(args: CommandArgumentsCollection) {
                 RangeContext(value.arguments(0), value.arguments(1))
             case None =>
                 // Calculate the default range (entire table)
-                RangeContext(
-                    "A1", // Starting from the top-left corner
-                    indexToColumn(table.getRows.last) + (table.getColumns.last + 1).toString // Ending at bottom-right corner
-                )
+                if (table.getRows.isEmpty) {
+                    RangeContext(
+                        "A1", // Starting from a corner
+                        "A1" // Ending at a corner
+                    )
+                } else {
+                    RangeContext(
+                        "A1", // Starting from a corner
+                        indexToColumn(table.getColumns.last) + (table.getRows.last + 1).toString // Ending at a corner
+                    )
+                }
         }
     }
 }

@@ -81,6 +81,7 @@ class TableProcessor(arguments: List[String]) {
         val tableRange: TableModifier[RangeContext] = new TableRangeLoader().getLoader
         table = tableRange.modify(table, new GetRangeContext(CA).getRange(table))
 
+
         // Load printers for standard output and file export
         val tablePrinterStdOut: TablePrinter[String] = new TablePrintStdOutLoader(CA).getLoader
         val tablePrinterExport: TablePrinter[String] = new TablePrintExportLoader(CA).getLoader
