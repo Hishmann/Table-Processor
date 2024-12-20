@@ -16,9 +16,13 @@ object ReferencingIndices {
      * @return An integer representing the zero-based index of the column.
      */
     def columnToIndex(column: String): Int = {
-        column.toUpperCase.foldLeft(0) { (acc, char) =>
-            acc * 26 + (char - 'A') // Calculate the index based on character positions
+        if (!column.matches("^[A-Za-z]+$")) {
+            throw new IllegalArgumentException("Invalid column name. Only letters are allowed.")
         }
+
+        column.toUpperCase.foldLeft(0) { (acc, char) =>
+            acc * 26 + (char - 'A' + 1) // Adjust by adding 1 to account for proper 1-based column encoding
+        } - 1 // Convert to zero-based index by subtracting 1
     }
 
     /**

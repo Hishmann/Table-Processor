@@ -22,19 +22,32 @@ class StringToFile extends StringToSource[String] {
         // Create a File object for the specified file path
         val file = new File(source)
 
-        // Create a BufferedWriter to write content to the file
-        val writer = new BufferedWriter(new FileWriter(file))
         try {
-            // Write the content to the file
-            writer.write(content)
-            println(s"Content successfully written to $source")
+            // Create parent directories if they do not exist
+            val parentDir = file.getParentFile
+            if (parentDir != null && !parentDir.exists()) {
+                parentDir.mkdirs()
+            }
+
+            // Create the file if it does not exist
+            if (!file.exists()) {
+                file.createNewFile()
+            }
+
+            // Create a BufferedWriter to write content to the file
+            val writer = new BufferedWriter(new FileWriter(file))
+            try {
+                // Write the content to the file
+                writer.write(content)
+                println(s"Content successfully written to $source")
+            } finally {
+                // Ensure the writer is closed to release resources
+                writer.close()
+            }
         } catch {
             // Handle any IOException that occurs during the file writing process
             case e: IOException =>
                 println(s"An error occurred: ${e.getMessage}")
-        } finally {
-            // Ensure the writer is closed to release resources
-            writer.close()
         }
     }
 }

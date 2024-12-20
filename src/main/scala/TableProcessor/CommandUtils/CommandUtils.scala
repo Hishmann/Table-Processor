@@ -23,7 +23,7 @@ object CommandUtils {
     val filterCommandName = "filter"                     // Command to filter rows based on conditions
     val filterEmptyCommandName = "filter-is-empty"       // Command to filter rows with empty cells
     val filterNotEmptyCommandName = "filter-is-not-empty" // Command to filter rows with non-empty cells
-    val headerCommandName = "header"                     // Command to toggle headers in output
+    val headerCommandName = "headers"                     // Command to toggle headers in output
 
     /**
      * List of available commands with their configurations.
