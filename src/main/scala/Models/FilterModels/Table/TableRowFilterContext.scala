@@ -11,5 +11,5 @@ import Models.FilterModels.Filters.CellFilter
  * @param column The name of the column to apply the filter to.
  * @param filter An instance of `CellFilter` that defines the filtering logic for the column's cells.
  */
-class TableRowFilterContext(val column: String, val filter: CellFilter) {
+case class TableRowFilterContext(val column: String, val filter: CellFilter) {
 }
