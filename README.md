@@ -1,6 +1,6 @@
 # Table-Processor
 
-A command-line application designed to load, process, evaluate, and format tabular data. This tool supports Excel-like formulas, row filtering, range selection, and output formats such as CSV and Markdown.
+A command-line application designed to load, process, evaluate, and format tabular data. This tool supports Excel-like formulas, row filtering, range selection, and output formats such as CSV.
 
 ## Features
 * **Formula Evaluation**: Supports arithmetic operations (+, -, *, /) and cell references (e.g., `=A1+B2`) with error detection for cyclical dependencies.
